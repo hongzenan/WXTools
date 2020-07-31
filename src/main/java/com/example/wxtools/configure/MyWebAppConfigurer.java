@@ -8,6 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MyWebAppConfigurer implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/pic/**").addResourceLocations("file:D:/programTools/wechat-devtool/pic");
+        registry.addResourceHandler("/gif/**").addResourceLocations("file:F:/pic/gif");
     }
 }
