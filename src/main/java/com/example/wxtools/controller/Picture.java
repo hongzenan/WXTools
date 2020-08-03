@@ -8,14 +8,14 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Calendar;
 
 public class Picture {
 
-    public static void main(String[] args) throws InterruptedException {
-        reverseImage("D:\\programTools\\wechat-devtool\\pic\\pic.gif", "D:\\programTools\\wechat-devtool\\pic\\outReverse1.gif");
-        Thread.sleep(5000);
+    public static void main(String[] args) {
+//        reverseImage("D:\\programTools\\wechat-devtool\\pic\\pic.gif", "D:\\programTools\\wechat-devtool\\pic\\outReverse1.gif");
+//        Thread.sleep(5000);
+        System.out.println(getDay());
     }
 
     public static void testResizeImage() {
@@ -29,7 +29,7 @@ public class Picture {
     private static void resizeImage(String srcImgPath, String distImgPath, int width, int height) throws IOException {
         File srcFile = new File(srcImgPath);
         Image srcImg = ImageIO.read(srcFile);
-        BufferedImage bufferedImage = null;
+        BufferedImage bufferedImage;
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         bufferedImage.getGraphics().drawImage(srcImg.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING), 0, 0, null);
         ImageIO.write(bufferedImage, "JPEG", new File(distImgPath));
@@ -45,7 +45,7 @@ public class Picture {
 
     private static File composeImage(File[] files) {
         try {
-            BufferedImage[] bufferedImage = null;
+            BufferedImage[] bufferedImage;
             bufferedImage = parse(files);
             Path path = Files.createTempFile("preview_", ".gif");
             System.out.println(path);
@@ -87,7 +87,7 @@ public class Picture {
         Thread.sleep(5000);
     }
 
-    static byte[] reverseImage(String src, String tar) {
+    static void reverseImage(String src, String tar) {
         BufferedImage image = null;
         byte[] bytes = null;
 
@@ -111,12 +111,16 @@ public class Picture {
             }
 
             animatedGifEncoder.finish();
-            FileInputStream fileInputStream = new FileInputStream(new File(tar));
-            bytes = new byte[fileInputStream.available()];
-            fileInputStream.read(bytes, 0, fileInputStream.available());
         }catch (Exception e) {
             e.printStackTrace();
         }
-        return bytes;
+    }
+
+    protected static String getDay() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return year + String.format("%02d", month) + String.format("%02d", day);
     }
 }

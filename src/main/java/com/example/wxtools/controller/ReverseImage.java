@@ -14,6 +14,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -28,14 +31,15 @@ public class ReverseImage {
 
     @ResponseBody
     @PostMapping(value = "/fileUpload", produces = MediaType.IMAGE_GIF_VALUE)
-    public byte[] fileUpload(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request) {
+    public String fileUpload(@RequestParam(value = "file") MultipartFile file, Model model, HttpServletRequest request) {
         if (file.isEmpty()) {
             System.out.println("文件为空空");
         }
         String fileName = file.getOriginalFilename();  // 文件名
         String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        String filePath = "F:\\pic\\gif\\"; // 上传后的路径
-        fileName = UUID.randomUUID() + suffixName; // 新文件名
+        String filePath = "F:\\pic\\gif\\" + Picture.getDay() + "\\"; // 上传后的路径
+        String uuid = UUID.randomUUID() + "";
+        fileName = uuid + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -46,19 +50,17 @@ public class ReverseImage {
             e.printStackTrace();
         }
 
+        String reverseFileName = uuid + "_outReverse" + suffixName;  //新文件名
+        Picture.reverseImage(filePath + fileName, filePath + reverseFileName);
 
-        filePath = "F:\\pic\\gif\\" + fileName;
-        byte[] bytes = Picture.reverseImage(filePath, "F:\\pic\\gif\\outReverse.gif");
-
-        return bytes;
+        return filePath + reverseFileName;
     }
 
     @ResponseBody
     @RequestMapping(value = "/getImage", produces = MediaType.IMAGE_GIF_VALUE)
-    public byte[] getImage() throws IOException {
-        String tar = "F:\\pic\\gif\\outReverse.gif"; // 上传后的路径
+    public byte[] getImage(String fileName) throws IOException {
 
-        FileInputStream fileInputStream = new FileInputStream(new File(tar));
+        FileInputStream fileInputStream = new FileInputStream(new File(fileName));
         byte[] bytes = new byte[fileInputStream.available()];
         fileInputStream.read(bytes, 0, fileInputStream.available());
         return bytes;
